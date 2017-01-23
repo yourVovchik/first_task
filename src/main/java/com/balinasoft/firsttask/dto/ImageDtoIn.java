@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -22,13 +22,12 @@ public class ImageDtoIn {
     @NotBlank
     //2 mb in base 64
     @ApiModelProperty(required = true, notes = "Base64 jpeg or png file",
-            allowableValues = "max 1280 by height or width")
+            allowableValues = "max 1280 by height or width", example = "ABC")
     @Length(max = (2 * 1024 * 1024) * 4)
     String base64Image;
 
-    @Min(0)
-    @ApiModelProperty(required = true, notes = "Unix Timestamp")
-    long time;
+    @ApiModelProperty(required = true, notes = "Unix Timestamp", dataType = "long", example = "1262307723")
+    Date date;
 
     @ApiModelProperty(required = true, allowableValues = "range[-90, 90]", notes = "Latitude")
     @DecimalMin("-90.0")

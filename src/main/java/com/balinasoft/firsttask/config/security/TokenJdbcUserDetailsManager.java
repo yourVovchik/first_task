@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Set;
 
 class TokenJdbcUserDetailsManager extends JdbcUserDetailsManager {
-    private final String USERS_BY_TOKEN = "SELECT security_users.user_id, TRUE AS enabled FROM security_tokens LEFT JOIN security_users ON security_tokens.user_id = security_users.user_id WHERE token = ?";
-    private final String AUTHORITIES_BY_USER_ID = "SELECT role FROM security_roles WHERE user_id = ?";
-    private final String UPDATE_LAST_ACCESS_DATE = "UPDATE security_tokens SET last_access = NOW() WHERE token = ?";
+    private final String USERS_BY_TOKEN = "SELECT security_user.user_id, TRUE AS enabled FROM security_token LEFT JOIN security_user ON security_token.user_id = security_user.user_id WHERE token = ?";
+    private final String AUTHORITIES_BY_USER_ID = "SELECT role FROM security_role WHERE user_id = ?";
+    private final String UPDATE_LAST_ACCESS_DATE = "UPDATE security_token SET last_access = NOW() WHERE token = ?";
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

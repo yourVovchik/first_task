@@ -10,7 +10,7 @@ import java.util.Date;
 @Entity
 @Setter
 @Getter
-@Table(name = "security_tokens")
+@Table(name = "security_token")
 public class SecurityToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

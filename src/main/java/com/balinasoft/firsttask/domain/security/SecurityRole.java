@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@Table(name = "security_roles")
+@Table(name = "security_role")
 public class SecurityRole {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

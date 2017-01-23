@@ -20,7 +20,7 @@ import javax.annotation.security.PermitAll;
 import static com.balinasoft.firsttask.system.StaticWrapper.wrap;
 
 @RestController
-@RequestMapping("/api/v1/account")
+@RequestMapping("/api/account")
 @Api(tags = "Signin, signup")
 public class SecurityController {
     private final SecurityService securityService;

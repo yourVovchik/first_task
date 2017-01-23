@@ -12,6 +12,7 @@ server:
   port: 9099
 
 project:
+  url: localhost:9099
   security:
     access-token:
       length: 64

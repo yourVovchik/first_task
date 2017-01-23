@@ -1,13 +1,17 @@
 package com.balinasoft.firsttask.service;
 
+import com.balinasoft.firsttask.domain.Image;
+import com.balinasoft.firsttask.domain.User;
 import com.balinasoft.firsttask.dto.ImageDtoIn;
 import com.balinasoft.firsttask.dto.ImageDtoOut;
+import com.balinasoft.firsttask.repository.ImageRepository;
+import com.balinasoft.firsttask.repository.UserRepository;
 import com.balinasoft.firsttask.system.error.ApiAssert;
 import com.balinasoft.firsttask.util.StringGenerator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,18 +26,34 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.balinasoft.firsttask.util.SecurityContextHolderWrapper.currentUserId;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class ImageServiceImpl implements ImageService {
 
     @Value("${project.image-folder}")
-    private String IMAGE_FOLDER;
+    private String imageFolder;
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+    @Value("${project.url}")
+    private String url;
+
+    private final UserRepository userRepository;
+
+    private final ImageRepository imageRepository;
+
+    @Autowired
+    public ImageServiceImpl(UserRepository userRepository,
+                            ImageRepository imageRepository) {
+        this.userRepository = userRepository;
+        this.imageRepository = imageRepository;
+    }
 
     @Override
-    public ImageDtoOut uploadImage(ImageDtoIn imageDtoIn, long l) {
+    public ImageDtoOut uploadImage(ImageDtoIn imageDtoIn) {
         String fileName;
         try {
             fileName = saveImage(imageDtoIn.getBase64Image());
@@ -41,12 +61,47 @@ public class ImageServiceImpl implements ImageService {
             throw new RuntimeException(e);
         }
 
-        return new ImageDtoOut(100, fileName);
+        User user = userRepository.findOne(currentUserId());
+        Image image = new Image();
+        image.setUrl(fileName);
+        image.setUser(user);
+        image.setLat(imageDtoIn.getLat());
+        image.setLng(imageDtoIn.getLng());
+        image.setDate(imageDtoIn.getDate());
+        image = imageRepository.save(image);
+        return toDto(image);
+    }
+
+    @Override
+    public void deleteImage(int id) {
+        Image image = imageRepository.findOne(id);
+        ApiAssert.notFound(image == null);
+        ApiAssert.forbidden(image.getUser().getId() != currentUserId());
+        try {
+            Files.delete(Paths.get(image.getUrl()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        imageRepository.delete(image);
+    }
+
+    @Override
+    public List<ImageDtoOut> getImages(int page) {
+        List<Image> images = imageRepository.findByUser(currentUserId(), new PageRequest(page, 20));
+        return images.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    private ImageDtoOut toDto(Image image) {
+        return new ImageDtoOut(image.getId(),
+                url + "/images/" + image.getUrl(),
+                image.getDate(),
+                image.getLat(),
+                image.getLng());
     }
 
     private String saveImage(String base64Image) throws IOException {
-        String fileName = generateUniqueFileName(IMAGE_FOLDER, "jpg");
-        Path destinationFile = Paths.get(fileName);
+        String fileName = generateUniqueFileName("uploaded", "jpg");
+        Path destinationFile = Paths.get(getFullPath(fileName));
 
         byte[] bytes = Base64.decodeBase64(base64Image);
         checkImage(bytes);
@@ -105,11 +160,11 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private String getFullPath(String fileName) {
-        return IMAGE_FOLDER + "/" + fileName;
+        return imageFolder + "/" + fileName;
     }
 
     private void createFolders(String fileName) throws IOException {
         String onlyFolder = fileName.substring(0, fileName.lastIndexOf('/'));
-        Files.createDirectories(Paths.get(onlyFolder));
+        Files.createDirectories(Paths.get(getFullPath(onlyFolder)));
     }
 }

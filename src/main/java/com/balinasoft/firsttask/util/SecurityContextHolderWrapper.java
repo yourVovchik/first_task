@@ -6,10 +6,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 public class SecurityContextHolderWrapper {
-    public static long currentUserId() {
+    public static int currentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        return Long.valueOf(user.getUsername());
+        return Integer.valueOf(user.getUsername());
     }
 
     public static boolean isRole(String role) {
