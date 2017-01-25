@@ -1,5 +1,7 @@
 package com.balinasoft.firsttask.dto;
 
+import com.balinasoft.firsttask.system.json.UnixTimestampDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sun.istack.internal.NotNull;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ public class ImageDtoIn {
     String base64Image;
 
     @ApiModelProperty(required = true, notes = "Unix Timestamp", dataType = "long", example = "1262307723")
+    @JsonDeserialize(using = UnixTimestampDeserializer.class)
     Date date;
 
     @ApiModelProperty(required = true, allowableValues = "range[-90, 90]", notes = "Latitude")

@@ -14,21 +14,15 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageDtoOut {
+public class CommentDtoOut {
 
     @ApiModelProperty(required = true)
     int id;
-
-    @ApiModelProperty(required = true)
-    String url;
 
     @ApiModelProperty(required = true)
     @JsonSerialize(using = UnixTimestampSereliazer.class)
     Date date;
 
     @ApiModelProperty(required = true)
-    double lat;
-
-    @ApiModelProperty(required = true)
-    double lng;
+    String text;
 }
