@@ -100,24 +100,32 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private String saveImage(String base64Image) throws IOException {
-        String fileName = generateUniqueFileName("uploaded", "jpg");
-        Path destinationFile = Paths.get(getFullPath(fileName));
-
         byte[] bytes = Base64.decodeBase64(base64Image);
-        checkImage(bytes);
+        String extension = checkImage(bytes);
+
+        String fileName = generateUniqueFileName("uploaded", extension);
+        Path destinationFile = Paths.get(getFullPath(fileName));
 
         Files.write(destinationFile, bytes, StandardOpenOption.CREATE);
         return fileName;
     }
 
-    private void checkImage(byte[] bytes) throws IOException {
+    private String checkImage(byte[] bytes) throws IOException {
         int maxSize = 1280;
         byte[] jpegMagicNumber = new byte[]{(byte) 0xff, (byte) 0xd8, (byte) 0xff, (byte) 0xe0};
         byte[] pngMagicNumber = new byte[]{(byte) 0x89, (byte) 0x50, (byte) 0x4e, (byte) 0x47};
 
         byte[] magicNumber = Arrays.copyOf(bytes, 4);
-        ApiAssert.badRequest(!Arrays.equals(jpegMagicNumber, magicNumber)
-                && !Arrays.equals(pngMagicNumber, magicNumber), "bad-image");
+
+        String extension = "";
+        if (Arrays.equals(jpegMagicNumber, magicNumber)) {
+            extension = "jpg";
+        } else if (Arrays.equals(pngMagicNumber, magicNumber)) {
+            extension = "png";
+        } else {
+            //noinspection ConstantConditions
+            ApiAssert.badRequest(true, "bad-image");
+        }
 
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         BufferedImage bufferedImage = null;
@@ -130,6 +138,7 @@ public class ImageServiceImpl implements ImageService {
         ApiAssert.badRequest(bufferedImage == null, "bad-image");
         ApiAssert.badRequest(bufferedImage.getWidth() > maxSize || bufferedImage.getHeight() > maxSize,
                 "big-image");
+        return extension;
     }
 
 
