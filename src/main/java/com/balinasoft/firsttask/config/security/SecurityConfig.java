@@ -1,5 +1,6 @@
 package com.balinasoft.firsttask.config.security;
 
+import com.balinasoft.firsttask.system.filter.LoggerFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -35,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .addFilterAfter(new SecurityFilter(authenticationManager()), BasicAuthenticationFilter.class)
+                .addFilterAfter(new LoggerFilter(), SecurityFilter.class)
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

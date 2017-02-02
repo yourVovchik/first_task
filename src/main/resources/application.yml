@@ -14,7 +14,7 @@ server:
   port: 9099
 
 project:
-  url: localhost:9099
+  url: http://213.184.248.43:9099
   security:
     access-token:
       length: 64
