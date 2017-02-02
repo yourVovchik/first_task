@@ -78,7 +78,7 @@ public class ImageServiceImpl implements ImageService {
         ApiAssert.notFound(image == null);
         ApiAssert.forbidden(image.getUser().getId() != currentUserId());
         try {
-            Files.delete(Paths.get(image.getUrl()));
+            Files.delete(Paths.get(getFullPath(image.getUrl())));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
