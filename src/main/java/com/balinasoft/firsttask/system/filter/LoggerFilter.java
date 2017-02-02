@@ -42,7 +42,7 @@ public class LoggerFilter implements Filter {
             String userId = authentication != null ? ((User) authentication.getPrincipal()).getUsername() : null;
 
             logger.info("\n" + req.getMethod()
-                    + " " + req.getServletPath()
+                    + " " + req.getRequestURI()
                     + " userId: " + userId
                     + " remoteAddr: " + req.getRemoteAddr()
                     + " remoteHost: " + req.getRemoteHost()
