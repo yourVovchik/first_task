@@ -1,14 +1,12 @@
 package com.balinasoft.firsttask.config.security;
 
 import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,8 +17,8 @@ import java.io.IOException;
 
 class SecurityFilter extends OncePerRequestFilter {
     private AuthenticationManager authenticationManager;
-    private AuthenticationEntryPoint authenticationEntryPoint = new Http401AuthenticationEntryPoint("");
-    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+    private AuthenticationEntryPoint authenticationEntryPoint =
+            new Http401AuthenticationEntryPoint("");
 
     public SecurityFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -28,7 +26,7 @@ class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Access-Token");
 
         if (token != null) {
@@ -36,7 +34,7 @@ class SecurityFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authRequest =
                         new UsernamePasswordAuthenticationToken(token, token);
 
-                authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
+//                authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
 
                 Authentication authenticate = authenticationManager.authenticate(authRequest);
                 SecurityContextHolder.getContext().setAuthentication(authenticate);

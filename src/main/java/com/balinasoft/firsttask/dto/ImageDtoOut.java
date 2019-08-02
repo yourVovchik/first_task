@@ -22,7 +22,7 @@ public class ImageDtoOut {
     @ApiModelProperty(required = true)
     String url;
 
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(required = true, dataType = "java.lang.Long", example = "1262307723")
     @JsonSerialize(using = UnixTimestampSereliazer.class)
     Date date;
 

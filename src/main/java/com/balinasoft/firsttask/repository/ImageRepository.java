@@ -16,6 +16,6 @@ import java.util.List;
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
 public interface ImageRepository extends JpaRepository<Image, Integer> {
-    @Query("from Image i where i.user.id = :userId")
+    @Query("from Image i where i.user.id = :userId order by i.date desc")
     List<Image> findByUser(@Param("userId") int userId, Pageable pageable);
 }

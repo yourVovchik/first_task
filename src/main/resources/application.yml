@@ -13,8 +13,14 @@ spring:
 server:
   port: 9099
 
+springfox:
+  documentation:
+    swagger:
+      v2:
+        host: junior.balinasoft.com
+
 project:
-  url: http://213.184.248.43:9099
+  url: http://junior.balinasoft.com
   security:
     access-token:
       length: 64

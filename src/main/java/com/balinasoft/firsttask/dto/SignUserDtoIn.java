@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 public class SignUserDtoIn {
     @NotBlank
     @Size(min = 4, max = 32)
-    @Pattern(regexp = "[a-z0-9_-]+")
+    @Pattern(regexp = "[a-z0-9_\\-.@]+")
     String login;
 
     @NotBlank

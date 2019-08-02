@@ -52,7 +52,7 @@ public class ImageController {
 
     @Secured("ROLE_USER")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    @ApiOperation(value = "Upload image", response = ImageDtoOut.class)
+    @ApiOperation(value = "Upload image", response = ImageDtoOut.class, responseContainer = "List")
     public ResponseDto getImages(@RequestParam int page) {
         return wrap(imageService.getImages(page));
     }
