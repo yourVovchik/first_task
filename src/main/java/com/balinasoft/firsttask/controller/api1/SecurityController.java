@@ -1,4 +1,4 @@
-package com.balinasoft.firsttask.controller;
+package com.balinasoft.firsttask.controller.api1;
 
 import com.balinasoft.firsttask.dto.ResponseDto;
 import com.balinasoft.firsttask.dto.SignUserDtoIn;

@@ -1,4 +1,4 @@
-package com.balinasoft.firsttask.controller;
+package com.balinasoft.firsttask.controller.api1;
 
 import com.balinasoft.firsttask.dto.CommentDtoIn;
 import com.balinasoft.firsttask.dto.CommentDtoOut;
