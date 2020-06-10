@@ -41,7 +41,7 @@ public class PhotoService {
     }
 
     private PhotoTypeDtoOut toDto(PhotoType photoType) {
-        return new PhotoTypeDtoOut(photoType.getId(), photoType.getName());
+        return new PhotoTypeDtoOut(photoType.getId(), photoType.getName(), photoType.getImage());
     }
 
 }

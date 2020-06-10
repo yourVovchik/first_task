@@ -17,4 +17,7 @@ public class PhotoType {
     @Column(length = 1000)
     private String name;
 
+    @Column(length = 1000)
+    private String image;
+
 }

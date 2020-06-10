@@ -1,5 +1,7 @@
 package com.balinasoft.firsttask.dto.api2;
 
+import com.balinasoft.firsttask.system.json.ImageUrlJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +19,8 @@ public class PhotoTypeDtoOut {
 
     @ApiModelProperty(required = true)
     String name;
+
+    @JsonSerialize(using = ImageUrlJsonSerializer.class)
+    String image;
 
 }
