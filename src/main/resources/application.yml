@@ -20,7 +20,7 @@ springfox:
         host: junior.balinasoft.com
 
 project:
-  url: http://junior.balinasoft.com
+  url: https://junior.balinasoft.com
   security:
     access-token:
       length: 64
