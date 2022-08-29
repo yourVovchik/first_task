@@ -11,4 +11,6 @@ public interface ImageService {
     void deleteImage(int id);
 
     List<ImageDtoOut> getImages(int page);
+
+    List<ImageDtoOut> getByCategoryIds(List<Long> categoryIds, int page);
 }

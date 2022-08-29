@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -55,5 +56,12 @@ public class ImageController {
     @ApiOperation(value = "Upload image", response = ImageDtoOut.class, responseContainer = "List")
     public ResponseDto getImages(@RequestParam int page) {
         return wrap(imageService.getImages(page));
+    }
+
+    @Secured("ROLE_USER")
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    @ApiOperation(value = "Get by category's", response = ImageDtoOut.class, responseContainer = "List")
+    public ResponseDto getImagesByCategoryIds(@RequestParam int page, @RequestBody List<Long> ids) {
+        return wrap(imageService.getByCategoryIds(ids,page));
     }
 }

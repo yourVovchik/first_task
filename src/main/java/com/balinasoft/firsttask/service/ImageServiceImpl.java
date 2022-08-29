@@ -2,8 +2,11 @@ package com.balinasoft.firsttask.service;
 
 import com.balinasoft.firsttask.domain.Image;
 import com.balinasoft.firsttask.domain.User;
+import com.balinasoft.firsttask.domain.api2.Category;
 import com.balinasoft.firsttask.dto.ImageDtoIn;
 import com.balinasoft.firsttask.dto.ImageDtoOut;
+import com.balinasoft.firsttask.dto.api2.CategoryDtoOut;
+import com.balinasoft.firsttask.repository.CategoryRepository;
 import com.balinasoft.firsttask.repository.ImageRepository;
 import com.balinasoft.firsttask.repository.UserRepository;
 import com.balinasoft.firsttask.system.error.ApiAssert;
@@ -45,11 +48,16 @@ public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
 
+    private final CategoryRepository categoryRepository;
+
     @Autowired
-    public ImageServiceImpl(UserRepository userRepository,
-                            ImageRepository imageRepository) {
+    public ImageServiceImpl(String imageFolder, String url, UserRepository userRepository,
+                            ImageRepository imageRepository, CategoryRepository categoryRepository) {
+        this.imageFolder = imageFolder;
+        this.url = url;
         this.userRepository = userRepository;
         this.imageRepository = imageRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -62,12 +70,14 @@ public class ImageServiceImpl implements ImageService {
         }
 
         User user = userRepository.findOne(currentUserId());
+        Category category = categoryRepository.findOne(imageDtoIn.getCategoryId());
         Image image = new Image();
         image.setUrl(fileName);
         image.setUser(user);
         image.setLat(imageDtoIn.getLat());
         image.setLng(imageDtoIn.getLng());
         image.setDate(imageDtoIn.getDate());
+        image.setCategory(category);
         image = imageRepository.save(image);
         return toDto(image);
     }
@@ -85,10 +95,17 @@ public class ImageServiceImpl implements ImageService {
         imageRepository.delete(image);
     }
 
+
+
     @Override
     public List<ImageDtoOut> getImages(int page) {
         List<Image> images = imageRepository.findByUser(currentUserId(), new PageRequest(page, 20));
         return images.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ImageDtoOut> getByCategoryIds(List<Long> categoryIds, int page) {
+        return imageRepository.findByCategoryIds(categoryIds,new PageRequest(page,20)).stream().map(this::toDto).collect(Collectors.toList());
     }
 
     private ImageDtoOut toDto(Image image) {
@@ -96,7 +113,8 @@ public class ImageServiceImpl implements ImageService {
                 url + "/images/" + image.getUrl(),
                 image.getDate(),
                 image.getLat(),
-                image.getLng());
+                image.getLng(),
+                toOut(image.getCategory()));
     }
 
     private String saveImage(String base64Image) throws IOException {
@@ -167,7 +185,6 @@ public class ImageServiceImpl implements ImageService {
                 "." +
                 extension;
     }
-
     private String getFullPath(String fileName) {
         return imageFolder + "/" + fileName;
     }
@@ -175,5 +192,9 @@ public class ImageServiceImpl implements ImageService {
     private void createFolders(String fileName) throws IOException {
         String onlyFolder = fileName.substring(0, fileName.lastIndexOf('/'));
         Files.createDirectories(Paths.get(getFullPath(onlyFolder)));
+    }
+
+    private CategoryDtoOut toOut(Category category){
+        return new CategoryDtoOut(category.getId(),category.getName());
     }
 }

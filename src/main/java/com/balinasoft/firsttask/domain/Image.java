@@ -1,11 +1,10 @@
 package com.balinasoft.firsttask.domain;
 
+import com.balinasoft.firsttask.domain.api2.Category;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -31,4 +30,7 @@ public class Image {
 
     @ManyToOne
     private User user;
+
+    @ManyToOne
+    private Category category;
 }

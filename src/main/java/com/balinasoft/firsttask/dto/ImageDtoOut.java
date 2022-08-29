@@ -1,5 +1,6 @@
 package com.balinasoft.firsttask.dto;
 
+import com.balinasoft.firsttask.dto.api2.CategoryDtoOut;
 import com.balinasoft.firsttask.system.json.UnixTimestampSereliazer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,4 +32,7 @@ public class ImageDtoOut {
 
     @ApiModelProperty(required = true)
     double lng;
+
+    @ApiModelProperty(required = true)
+    CategoryDtoOut categoryOut;
 }
